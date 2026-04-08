@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Prototics Lab System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Prototics Lab Management System</h1>
+
+  <!-- NAVIGATION -->
+  <div class="tabs">
+    <button onclick="showTab('student')">Student</button>
+    <button onclick="showTab('assistant')">Lab Assistant</button>
+  </div>
+
+  <!-- STUDENT PANEL -->
+  <div id="student" class="tab">
+    <h2>Issue Tool</h2>
+
+    <select id="tool">
+      <option value="">-- Select Tool --</option>
+
+      <optgroup label="Cupboard 1">
+        <option>Welding Gloves</option>
+        <option>Baby Vice</option>
+        <option>Mini Angle Grinder</option>
+        <option>Double End Spanner</option>
+        <option>Adjustable Spanner (Small)</option>
+        <option>Hand Drill Machine</option>
+      </optgroup>
+
+      <optgroup label="Cupboard 2">
+        <option>Steel Wire Brush</option>
+        <option>Snipper</option>
+        <option>Hand Hack Saw</option>
+        <option>Plastic Hammer</option>
+        <option>Chisel (Small)</option>
+        <option>Flat File</option>
+      </optgroup>
+
+      <optgroup label="Cupboard 3">
+        <option>Measuring Tape</option>
+        <option>Phillips Screwdriver</option>
+        <option>Flat Screwdriver</option>
+        <option>Pliers</option>
+        <option>Allen Key Set</option>
+      </optgroup>
+    </select>
+
+    <button onclick="openCamera('issue')">Scan Face & Issue Tool</button>
+    <p id="studentStatus"></p>
+  </div>
+
+  <!-- ASSISTANT PANEL -->
+  <div id="assistant" class="tab hidden">
+    <h2>Register Student</h2>
+
+    <input id="studentName" placeholder="Student Name">
+    <input id="studentId" placeholder="Student ID">
+
+    <button onclick="openCamera('register')">Register Face</button>
+    <p id="assistantStatus"></p>
+  </div>
+
+  <!-- CAMERA (SHARED) -->
+  <div id="cameraBox" class="camera hidden">
+    <video id="video" autoplay></video>
+    <button onclick="capture()">Capture</button>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
