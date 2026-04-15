@@ -1,28 +1,19 @@
-let stream;
 let currentMode = "";
+let stream = null;
 
-// Switch tabs
-function showTab(tab) {
-  document.getElementById("student").classList.add("hidden");
-  document.getElementById("assistant").classList.add("hidden");
-
-  document.getElementById(tab).classList.remove("hidden");
-}
-
-// Open camera
-function openCamera(mode) {
+// Start Camera
+function startCamera(mode) {
   currentMode = mode;
-
-  document.getElementById("cameraBox").classList.remove("hidden");
 
   navigator.mediaDevices.getUserMedia({ video: true })
     .then(s => {
       stream = s;
-      document.getElementById("video").srcObject = stream;
+      document.getElementById("video").srcObject = s;
+      document.getElementById("cameraBox").classList.remove("hidden");
     });
 }
 
-// Capture image
+// Capture Face
 function capture() {
   const video = document.getElementById("video");
   const canvas = document.createElement("canvas");
@@ -31,37 +22,68 @@ function capture() {
   canvas.height = video.videoHeight;
 
   canvas.getContext("2d").drawImage(video, 0, 0);
-
   const faceImage = canvas.toDataURL("image/png");
 
   stream.getTracks().forEach(track => track.stop());
   document.getElementById("cameraBox").classList.add("hidden");
 
+  // ISSUE TOOL
   if (currentMode === "issue") {
     const tool = document.getElementById("tool").value;
     const time = new Date().toLocaleString();
 
-    localStorage.setItem("issuedTool", JSON.stringify({
+    const student = "STUDENT_001"; // simulated biometric
+
+    const record = {
       tool,
-      time,
-      faceImage
-    }));
+      student,
+      status: "IN USE",
+      time
+    };
+
+    let records = JSON.parse(localStorage.getItem("records")) || [];
+    records.push(record);
+    localStorage.setItem("records", JSON.stringify(records));
 
     document.getElementById("studentStatus").innerText =
-      `Tool "${tool}" issued at ${time}`;
+      `Tool "${tool}" issued to ${student}`;
+
+    loadRecords();
   }
 
+  // REGISTER STUDENT
   if (currentMode === "register") {
     const name = document.getElementById("studentName").value;
     const id = document.getElementById("studentId").value;
 
-    localStorage.setItem(id, JSON.stringify({
-      name,
-      faceImage
-    }));
+    localStorage.setItem(id, JSON.stringify({ name, faceImage }));
 
     document.getElementById("assistantStatus").innerText =
       "Student registered successfully";
   }
 }
+
+// LOAD RECORDS
+function loadRecords() {
+  const table = document.querySelector("#toolTable tbody");
+  table.innerHTML = "";
+
+  const records = JSON.parse(localStorage.getItem("records")) || [];
+
+  records.forEach(r => {
+    const row = `
+      <tr>
+        <td>${r.tool}</td>
+        <td>${r.student}</td>
+        <td>${r.status}</td>
+        <td>${r.time}</td>
+      </tr>
+    `;
+    table.innerHTML += row;
+  });
+}
+
+window.onload = loadRecords;
+
+
 
